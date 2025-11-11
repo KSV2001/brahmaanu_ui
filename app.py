@@ -272,6 +272,10 @@ def build_ui() -> gr.Blocks:
                     placeholder="Ask a handbook question...",
                 )
                 send = gr.Button("Send", variant="primary")
+
+
+
+
                 
                 def _pick_sample(q: str) -> Tuple[str, None]:
                     """
@@ -279,9 +283,9 @@ def build_ui() -> gr.Blocks:
                     dropdown.  Resetting the dropdown allows the same question to be
                     selected again without refreshing:contentReference[oaicite:3]{index=3}.
                     """
-                    return (q or "", gr.update(value=None))
+                    return q or ""
                 # Update both the textbox and the dropdown value when a sample is chosen.
-                sample_dd.change(_pick_sample, inputs=sample_dd, outputs=[msg, sample_dd])
+                sample_dd.change(_pick_sample, inputs=sample_dd, outputs=msg)
 
 
             # chat history at bottom
