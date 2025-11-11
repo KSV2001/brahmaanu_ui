@@ -1,6 +1,6 @@
 # app.py
 """
-Hugging Face Space frontend for Brahmaanu LLM
+Code for the frontend for Brahmaanu LLM
 
 This script recreates the original Gradio UI from the main repository
 but delegates all heavy lifting to a remote API.  The API should be
@@ -279,7 +279,7 @@ def build_ui() -> gr.Blocks:
                     dropdown.  Resetting the dropdown allows the same question to be
                     selected again without refreshing:contentReference[oaicite:3]{index=3}.
                     """
-                    return (q or "", None)
+                    return (q or "", gr.update(value=None))
                 # Update both the textbox and the dropdown value when a sample is chosen.
                 sample_dd.change(_pick_sample, inputs=sample_dd, outputs=[msg, sample_dd])
 
