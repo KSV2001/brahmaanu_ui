@@ -1,17 +1,14 @@
 # app.py
 """
 Code for the frontend for Brahmaanu LLM
-
 This script recreates the original Gradio UI from the main repository
 but delegates all heavy lifting to a remote API.  The API should be
 deployed separately (e.g. via the modified Dockerfile) and exposes
 ``/chat`` and ``/sample_questions`` endpoints as defined in
 ``app/api.py``.
-
 To run this Space locally, set the ``BACKEND_URL`` environment variable to
 point at your API server.  When deployed as a Hugging Face Space,
 ``BACKEND_URL`` can be configured via the Space settings or secrets.
-
 The design, theme, CSS and layout mirror the original ``main_gradio.py``
 file in the GitHub repo to maintain a consistent user experience.
 """
@@ -84,7 +81,6 @@ def call_api(
 ) -> Tuple[str, List[Tuple[str, str]], Dict[str, Any], str]:
     """
     Proxy the chat request to the remote API.
-
     Returns a tuple of (empty_prompt, chat_history, state, status) to match
     the signature expected by Gradio event handlers.
     """
@@ -233,6 +229,21 @@ def build_ui() -> gr.Blocks:
             border: 1px solid #000000 !important;
             box-shadow: 0 0 1px #000000 !important;
         }}
+        #docs-link {{
+            background: rgba(2, 6, 23, 0.85);
+            padding: 6px 10px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }}
+        #docs-link a {{
+            color: #fff000 !important;
+            font-weight: 600;
+            text-decoration: none;
+        }}
+        #docs-link a:hover {{
+            text-decoration: underline;
+        }}
         """,
     ) as demo:
         with gr.Column():
@@ -242,6 +253,21 @@ def build_ui() -> gr.Blocks:
                     "Brahmaanu LLM · Mistral-7B SFT  RAG · **by Srivatsava Kasibhatla**",
                     elem_id="top-title",
                 )
+
+            # docs link
+            gr.HTML(
+                """
+                <div id="docs-link">
+                <div style="background: rgba(2, 6, 23, 0.9); padding: 6px 10px; border-radius: 8px; display: inline-block; margin-bottom: 10px;">
+                    <a href="https://github.com/KSV2001/brahmaanu_llm/tree/main/data/raw/docs"
+                       target="_blank"
+                       style="color: #fff000; font-weight: 600; text-decoration: none;">
+                       Click here to see the Brahmaanu docs from Srivatsava's repo
+                    </a>
+                </div>
+                """
+            )
+
 
             # mode  history  status
             with gr.Row(elem_id="controls-card"):
@@ -272,10 +298,6 @@ def build_ui() -> gr.Blocks:
                     placeholder="Ask a handbook question...",
                 )
                 send = gr.Button("Send", variant="primary")
-
-
-
-
                 
                 def _pick_sample(q: str) -> Tuple[str, None]:
                     """
