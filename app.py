@@ -95,7 +95,7 @@ def call_api(
     print(f"[HF] POST {url}")
     print(f"[HF] payload keys = {list(payload.keys())}")
     try:
-        resp = requests.post(url, json=payload, timeout=60, allow_redirects=False)
+        resp = requests.post(url, json=payload, timeout=60)
         print(f"[HF] status = {resp.status_code}")
         if resp.is_redirect:
             print(f"[HF] redirect → {resp.headers.get('location')}")
