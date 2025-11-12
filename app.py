@@ -27,6 +27,9 @@ import gradio as gr
 # be configured without editing the code.  Defaults to localhost for
 # convenience during development.  Do not include a trailing slash.
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:7861").rstrip("/")
+TOKEN = os.getenv("RUNPOD_API_TOKEN", "xxxxx")
+
+headers = {"Authorization": f"Bearer {TOKEN}"}
 print(f"[HF] BACKEND_URL resolved to: {BACKEND_URL}")
 
 # Model modes supported by the backend.  Keep these in sync with the
@@ -36,7 +39,7 @@ MODES = ["SFT_RAG", "SFT", "BASE_RAG", "BASE"]
 # Health check
 def check_backend():
     try:
-        r = requests.get(f"{BACKEND_URL}/health", timeout=10)
+        r = requests.get(f"{BACKEND_URL}/health", headers= headers, timeout=50)
         r.raise_for_status()
         if r.ok and r.json().get("status") == "ok":
             return "backend=READY"
@@ -51,7 +54,7 @@ def check_backend():
 def fetch_sample_questions() -> List[str]:
     """Attempt to fetch sample questions from the API, falling back to static."""
     try:
-        resp = requests.get(f"{BACKEND_URL}/sample_questions", timeout=10)
+        resp = requests.get(f"{BACKEND_URL}/sample_questions", headers = headers, timeout=40)
         resp.raise_for_status()
         data = resp.json()
         if isinstance(data, list):
@@ -95,7 +98,7 @@ def call_api(
     print(f"[HF] POST {url}")
     print(f"[HF] payload keys = {list(payload.keys())}")
     try:
-        resp = requests.post(url, json=payload, timeout=60)
+        resp = requests.post(url, headers = headers, json=payload, timeout=300)
         print(f"[HF] status = {resp.status_code}")
         if resp.is_redirect:
             print(f"[HF] redirect → {resp.headers.get('location')}")
